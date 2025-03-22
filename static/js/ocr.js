@@ -1,4 +1,14 @@
 
+
+
+export function initOCR() {
+    const captureButton = document.getElementById("capture-btn");
+    const selectWindowButton = document.getElementById("select-window-btn");
+    
+    captureButton.addEventListener("click", captureFrame);
+    selectWindowButton.addEventListener("click", startCapture);
+}
+
 /**
  * Starts capturing the display media and sets the video source to the captured stream.
  * 
@@ -24,7 +34,7 @@ async function startCapture() {
  * @function captureFrame
  * @returns {Promise<void>} A promise that resolves when the frame capture and OCR processing is complete.
  */
-async function captureFrame() {
+export async function captureFrame() {
   const video = document.getElementById("video");
   const canvas = document.createElement("canvas");
   canvas.width = video.videoWidth;
@@ -46,19 +56,6 @@ async function captureFrame() {
 }
 
 /**
- * Converts a data URL to a Blob object.
- *
- * @param {string} dataurl - The data URL to convert.
- * @returns {Blob} - The resulting Blob object.
- */
-function dataURLtoBlob(dataurl) {
-  var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
-    bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
-  while(n--) u8arr[n] = bstr.charCodeAt(n);
-  return new Blob([u8arr], {type:mime});
-}
-
-/**
  * Displays the mined text inside an HTML element with the ID 'ocr-result'.
  * The text is wrapped in a <main> element with a 'lang' attribute set to 'ja'.
  *
@@ -73,4 +70,15 @@ function dispalyMinedText(text) {
     wrapper.appendChild(div);
 }
 
-//startCapture();
+/**
+ * Converts a data URL to a Blob object.
+ *
+ * @param {string} dataurl - The data URL to convert.
+ * @returns {Blob} - The resulting Blob object.
+ */
+function dataURLtoBlob(dataurl) {
+  var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+    bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+  while(n--) u8arr[n] = bstr.charCodeAt(n);
+  return new Blob([u8arr], {type:mime});
+}

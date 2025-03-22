@@ -13,6 +13,7 @@ echo [+] Installing dependencies...
 pip install -r requirements.txt
 
 echo [+] Starting the app...
-python app.py
+start "" python app.py
 
-pause
+echo [+] Opening the browser...
+start http://localhost:5000
