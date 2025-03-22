@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Asobitai</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <h1>Asobitai</h1>
+  <video id="video" autoplay></video>
+  
+  <button onclick="captureFrame()"><span>Analyse</span></button>
+
+  <button onclick="startCapture()"><span>Select the window</span></button>
+  
+  <form id="uploadForm" method="POST" enctype="multipart/form-data" action="/ocr">
+    <input type="hidden" name="image" id="imageInput">
+  </form>
+  <div id="ocr-result"></div>
+  <script src="/static/script.js"></script>
+</body>
+</html>
