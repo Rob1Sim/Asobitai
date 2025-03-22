@@ -6,17 +6,23 @@
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-  <h1>Asobitai</h1>
-  <video id="video" autoplay></video>
-  
-  <button onclick="captureFrame()"><span>Analyse</span></button>
-
-  <button onclick="startCapture()"><span>Select the window</span></button>
-  
-  <form id="uploadForm" method="POST" enctype="multipart/form-data" action="/ocr">
-    <input type="hidden" name="image" id="imageInput">
-  </form>
-  <div id="ocr-result"></div>
-  <script src="/static/script.js"></script>
+  <header>
+    <h1>Asobitai</h1>
+  </header>
+  <main>
+    <div class="capture-container">
+      <video id="video" autoplay></video>
+      <div>
+          <button id="capture-btn">Analyse</button>
+          <button id="select-window-btn">Select the window</button>
+      </div>
+    </div>
+    
+    <form id="uploadForm" method="POST" enctype="multipart/form-data" action="/ocr">
+      <input type="hidden" name="image" id="imageInput">
+    </form>
+    <div id="ocr-result"></div>
+  </main>
+  <script type="module" src="/static/js/main.js"></script>
 </body>
 </html>

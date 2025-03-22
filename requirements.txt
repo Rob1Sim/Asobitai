@@ -2,3 +2,5 @@ flask
 paddleocr 
 paddlepaddle-gpu
 setuptools
+numpy
+pillow
