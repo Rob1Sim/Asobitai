@@ -2,16 +2,20 @@
 echo "=== 🛠️ Installing and launching Asobitai ==="
 
 # Create virtual environment
+# Create virtual environment
 echo "[+] Creating virtual environment..."
 python3 -m venv venv
 
 # Activate virtual environment
+# Activate virtual environment
 source venv/bin/activate
 
+# Upgrade pip
 # Upgrade pip
 echo "[+] Upgrading pip..."
 pip install --upgrade pip
 
+# Install dependencies
 # Install dependencies
 echo "[+] Installing dependencies..."
 pip install -r requirements.txt
