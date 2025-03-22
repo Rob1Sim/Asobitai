@@ -15,5 +15,7 @@ pip install -r requirements.txt
 echo [+] Starting the app...
 start "" python app.py
 
+timeout /T 10 >nul
+
 echo [+] Opening the browser...
 start http://localhost:5000

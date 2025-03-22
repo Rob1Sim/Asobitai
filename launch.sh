@@ -21,7 +21,7 @@ echo "[+] Starting the app in the background..."
 python app.py &
 
 # Wait a moment for the server to start
-sleep 2
+sleep 10
 
 # Open browser depending on OS
 if [[ "$OSTYPE" == "darwin"* ]]; then
