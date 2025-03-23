@@ -36,13 +36,6 @@
                 Shortcut: Ctrl + Shift + K
               </div>
             </div>
-            <!-- Reset button with tooltip -->
-            <div class="relative group">
-              <button id="reset-btn" class="bg-red-500 text-white px-4 py-2 rounded-xl shadow hover:bg-red-600">Reset</button>
-              <div class="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 px-2 py-1 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition">
-                Clears the OCR result
-              </div>
-            </div>
           </div>
         </div>
   
@@ -51,6 +44,15 @@
           <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-inner p-4 flex-1">
             <h2 class="text-xl font-semibold mb-2">OCR Result</h2>
             <div id="ocr-result" class="whitespace-pre-wrap font-mono text-gray-800 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 h-98 p-4 rounded-xl"></div>
+            <!-- Reset button moved inside OCR panel -->
+            <div class="mt-4 flex justify-start">
+              <div class="relative group">
+                <button id="reset-btn" class="bg-red-500 text-white px-4 py-2 rounded-xl shadow hover:bg-red-600">Reset</button>
+                <div class="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 px-2 py-1 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition">
+                  Clears the OCR result
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

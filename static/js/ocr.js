@@ -2,6 +2,13 @@ export function initOCR() {
     const captureButton = document.getElementById("capture-btn");
     const selectWindowButton = document.getElementById("select-window-btn");
     
+    captureButton?.setAttribute("disabled", "true");
+    captureButton?.classList.add("opacity-50", "cursor-not-allowed");
+    document.getElementById("select-region-btn")?.setAttribute("disabled", "true");
+    document.getElementById("clear-region-btn")?.setAttribute("disabled", "true");
+    document.getElementById("select-region-btn")?.classList.add("opacity-50", "cursor-not-allowed");
+    document.getElementById("clear-region-btn")?.classList.add("opacity-50", "cursor-not-allowed");
+
     captureButton.addEventListener("click", captureFrame);
     selectWindowButton.addEventListener("click", startCapture);
     initOCRTextSizeSlider();
@@ -25,6 +32,29 @@ async function startCapture() {
   const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
   const video = document.getElementById("video");
   video.srcObject = stream;
+  // Handle end of screen sharing
+  stream.getVideoTracks()[0].addEventListener("ended", () => {
+    video.srcObject = null;
+  
+    document.getElementById("capture-btn")?.setAttribute("disabled", "true");
+    document.getElementById("select-region-btn")?.setAttribute("disabled", "true");
+    document.getElementById("clear-region-btn")?.setAttribute("disabled", "true");
+  
+    document.getElementById("capture-btn")?.classList.add("opacity-50", "cursor-not-allowed");
+    document.getElementById("select-region-btn")?.classList.add("opacity-50", "cursor-not-allowed");
+    document.getElementById("clear-region-btn")?.classList.add("opacity-50", "cursor-not-allowed");
+  });
+
+  // Enable buttons after capture starts
+  document.getElementById("capture-btn")?.removeAttribute("disabled");
+  document.getElementById("select-region-btn")?.removeAttribute("disabled");
+  document.getElementById("clear-region-btn")?.removeAttribute("disabled");
+  document.getElementById("capture-btn")?.removeAttribute("disabled");
+  document.getElementById("capture-btn")?.classList.remove("opacity-50", "cursor-not-allowed");
+
+  document.getElementById("capture-btn")?.classList.remove("opacity-50", "cursor-not-allowed");
+  document.getElementById("select-region-btn")?.classList.remove("opacity-50", "cursor-not-allowed");
+  document.getElementById("clear-region-btn")?.classList.remove("opacity-50", "cursor-not-allowed");
 }
 
 /**
