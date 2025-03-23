@@ -5,7 +5,10 @@ export function initOCR() {
     captureButton.addEventListener("click", captureFrame);
     selectWindowButton.addEventListener("click", startCapture);
     initOCRTextSizeSlider();
+    initRegionSelection();
 }
+
+let selectedRegion = null;
 
 /**
  * Starts capturing the display media and sets the video source to the captured stream.
@@ -35,10 +38,23 @@ async function startCapture() {
 export async function captureFrame() {
   const video = document.getElementById("video");
   const canvas = document.createElement("canvas");
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
-  const ctx = canvas.getContext("2d");
-  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+  
+  if (selectedRegion) {
+    const sx = selectedRegion.x;
+    const sy = selectedRegion.y;
+    const sw = selectedRegion.width;
+    const sh = selectedRegion.height;
+    canvas.width = sw;
+    canvas.height = sh;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(video, sx, sy, sw, sh, 0, 0, sw, sh);
+  } else {
+    const ctx = canvas.getContext("2d");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+  }
+  
   const dataUrl = canvas.toDataURL("image/png");
 
   const formData = new FormData();
@@ -92,4 +108,103 @@ function initOCRTextSizeSlider() {
 
   // Set initial font size
   result.style.fontSize = `${slider.value}px`;
+}
+
+/**
+ * Initializes the region selection functionality for a video element.
+ * 
+ * This function sets up event listeners for selecting a region on a video element
+ * by clicking and dragging the mouse. The selected region is represented by a 
+ * dashed red overlay. The coordinates and dimensions of the selected region are 
+ * calculated relative to the video element and stored in the `selectedRegion` variable.
+ * 
+ * The function also sets up a button to clear the selected region.
+ * 
+ * @function
+ */
+function initRegionSelection() {
+  const video = document.getElementById("video");
+  const overlay = document.createElement("div");
+  overlay.style.position = "absolute";
+  overlay.style.border = "2px dashed red";
+  overlay.style.pointerEvents = "none";
+  overlay.style.display = "none";
+  overlay.style.zIndex = "1000";
+  document.body.appendChild(overlay);
+
+  let startX, startY;
+
+  document.getElementById("select-region-btn")?.addEventListener("click", () => {
+    selectedRegion = null;
+    overlay.style.display = "none";
+    const rect = video.getBoundingClientRect();
+    const scrollTop = window.scrollY;
+    const scrollLeft = window.scrollX;
+    let selecting = false;
+
+    function onMouseDown(e) {
+      const clickX = e.pageX;
+      const clickY = e.pageY;
+      if (
+        clickX < rect.left + scrollLeft || clickX > rect.right + scrollLeft ||
+        clickY < rect.top + scrollTop || clickY > rect.bottom + scrollTop
+      ) return;
+
+      selecting = true;
+      startX = clickX;
+      startY = clickY;
+      overlay.style.left = `${startX}px`;
+      overlay.style.top = `${startY}px`;
+      overlay.style.width = "0px";
+      overlay.style.height = "0px";
+      overlay.style.display = "block";
+    }
+
+    function onMouseMove(e) {
+      if (!selecting) return;
+      let currentX = Math.max(rect.left + scrollLeft, Math.min(e.pageX, rect.right + scrollLeft));
+      let currentY = Math.max(rect.top + scrollTop, Math.min(e.pageY, rect.bottom + scrollTop));
+      const x = Math.min(startX, currentX);
+      const y = Math.min(startY, currentY);
+      const width = Math.abs(currentX - startX);
+      const height = Math.abs(currentY - startY);
+      overlay.style.left = `${x}px`;
+      overlay.style.top = `${y}px`;
+      overlay.style.width = `${width}px`;
+      overlay.style.height = `${height}px`;
+    }
+
+    function onMouseUp(e) {
+      if (!selecting) return;
+      selecting = false;
+
+      const x = Math.min(startX, e.pageX);
+      const y = Math.min(startY, e.pageY);
+      const width = Math.abs(e.pageX - startX);
+      const height = Math.abs(e.pageY - startY);
+
+      const scaleX = video.videoWidth / rect.width;
+      const scaleY = video.videoHeight / rect.height;
+
+      selectedRegion = {
+        x: (x - rect.left - scrollLeft) * scaleX,
+        y: (y - rect.top - scrollTop) * scaleY,
+        width: width * scaleX,
+        height: height * scaleY
+      };
+
+      document.removeEventListener("mousedown", onMouseDown);
+      document.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("mouseup", onMouseUp);
+    }
+
+    document.addEventListener("mousedown", onMouseDown);
+    document.addEventListener("mousemove", onMouseMove);
+    document.addEventListener("mouseup", onMouseUp);
+  });
+
+  document.getElementById("clear-region-btn")?.addEventListener("click", () => {
+    selectedRegion = null;
+    overlay.style.display = "none";
+  });
 }
