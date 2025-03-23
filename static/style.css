@@ -1,25 +1,8 @@
+@import "tailwindcss";
 
-body {
-  font-family: sans-serif;
-  padding: 2em;
-  background-color: #f9f9f9;
-  color: #333;
-}
 video {
   max-width: 100%;
-  border: 1px solid #ccc;
+
   margin-bottom: 1em;
 }
-button {
-  padding: 0.5em 1em;
-  font-size: 1em;
-  cursor: pointer;
-}
-#ocr-result {
-  white-space: pre-wrap;
-  background: #eee;
-  padding: 1em;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  margin-top: 1em;
-}
+

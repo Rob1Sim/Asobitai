@@ -1,28 +1,161 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
   <title>Asobitai</title>
-  <link rel="stylesheet" href="/static/style.css">
+  <script>
+    document.documentElement.classList.toggle('dark', window.matchMedia('(prefers-color-scheme: dark)').matches);
+  </script>
+  <link rel="stylesheet" href="/static/output.css">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+  <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+
 </head>
 <body>
-  <header>
-    <h1>Asobitai</h1>
-  </header>
-  <main>
-    <div class="capture-container">
-      <video id="video" autoplay></video>
-      <div>
-          <button id="capture-btn">Analyse</button>
-          <button id="select-window-btn">Select the window</button>
+  <div id="app">
+    <header class="bg-white dark:bg-gray-800 shadow-md py-4 px-6 flex justify-between items-center gap-4">
+      <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100">Asobitai</h1>
+      <div class="flex items-center space-x-2">
+        <a href="https://github.com/Rob1Sim/Asobitai" target="_blank" class="inline-flex items-center gap-1 text-sm text-gray-600 dark:text-gray-100 hover:text-gray-900">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+            <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.302 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577 
+            0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.087-.744.084-.729.084-.729 
+            1.205.084 1.84 1.237 1.84 1.237 1.07 1.835 2.807 1.305 3.495.998.107-.776.42-1.305.763-1.605-2.665-.3-5.467-1.334-5.467-5.93 
+            0-1.31.468-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23a11.49 11.49 0 0 1 3-.405c1.02.005 2.045.138 3 
+            .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 
+            0 4.61-2.805 5.625-5.475 5.92.435.375.81 1.096.81 2.215 
+            0 1.6-.015 2.89-.015 3.285 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297 
+            24 5.67 18.627.297 12 .297z"/>
+          </svg>
+          GitHub
+        </a>
+        <button class="text-sm text-gray-600 dark:text-gray-100 hover:text-gray-900"><a>About</a></button>
       </div>
-    </div>
-    
-    <form id="uploadForm" method="POST" enctype="multipart/form-data" action="/ocr">
-      <input type="hidden" name="image" id="imageInput">
-    </form>
-    <div id="ocr-result"></div>
-  </main>
+    </header>
+    <main class="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 p-6">
+      <div class="flex flex-col lg:flex-row gap-6">
+        <!-- Video Input -->
+        <div class="w-full lg:w-1/2 bg-white dark:bg-gray-800 rounded-2xl shadow-md p-4">
+          <h2 class="text-lg font-semibold mb-2">Live Capture</h2>
+          <div class="rounded-xl overflow-hidden border">
+            <video id="video" autoplay class="w-full h-auto object-cover"></video>
+          </div>
+          <div class="mt-4 flex gap-2">
+            <!-- Scan button -->
+            <div class="relative group">
+              <button id="capture-btn" class="bg-blue-500 text-white px-4 py-2 rounded-xl shadow hover:bg-blue-600">Scan</button>
+              <div id="scan-tooltip" class="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 px-2 py-1 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap">
+                Shortcut: Ctrl + Shift + K
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <!-- OCR Result -->
+        <div class="w-full lg:w-1/2 flex flex-col">
+          <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-inner p-4 flex-1">
+            <h2 class="text-xl font-semibold mb-2">OCR Result</h2>
+            <div id="ocr-result" class="whitespace-pre-wrap font-mono text-gray-800 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 p-4 rounded-xl flex-1 min-h-0 h-99 overflow-y-auto grow"></div>
+            <div id="ocr-loading" class="flex items-center gap-2 text-sm text-gray-500 mt-2 hidden">
+              <svg class="w-4 h-4 animate-spin text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+              </svg>
+              <span>Analyzing...</span>
+            </div>
+            <div class="mt-4 flex gap-2 flex-wrap">
+              <!-- Reset Button -->
+              <div class="relative group">
+                <button id="reset-btn" class="bg-red-500 text-white px-4 py-2 rounded-xl shadow hover:bg-red-600">Reset</button>
+                <div class="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 px-2 py-1 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition">
+                  Clears the OCR result
+                </div>
+              </div>
+
+              <!-- Copy Button -->
+              <div class="relative group">
+                <button id="copy-btn" class="bg-green-500 text-white px-4 py-2 rounded-xl shadow hover:bg-green-600">Copy</button>
+                <div class="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 px-2 py-1 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition">
+                  Copy to clipboard
+                </div>
+              </div>
+
+              <!-- Sanitize Button -->
+              <div class="relative group">
+                <button id="sanitize-btn" class="bg-yellow-500 text-white px-4 py-2 rounded-xl shadow hover:bg-yellow-600">Sanitize</button>
+                <div class="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 px-2 py-1 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap">
+                  Remove spaces, line breaks, and dashes
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Options Panel -->
+      <div class="mt-6 flex flex-col lg:flex-row gap-6 w-full max-w-screen-xl mx-auto">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-4 w-full lg:w-2/3">
+          <h2 class="text-lg font-semibold mb-4">Options</h2>
+          <div class="flex flex-col gap-4">
+            <!-- Select Window -->
+            <div class="relative group w-fit">
+              <button id="select-window-btn" class="bg-gray-300 text-gray-700 px-4 py-2 rounded-xl shadow hover:bg-gray-400">Select Window</button>
+              <div class="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 px-2 py-1 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition">
+                Choose a window to scan
+              </div>
+            </div>
+
+            <!-- Select Region -->
+            <div class="flex flex-col gap-2">
+              <label class="text-sm font-medium text-gray-700 dark:text-gray-100">Select Region</label>
+              <div class="flex gap-2">
+                <button id="select-region-btn" class="bg-gray-300 text-gray-700 px-4 py-2 rounded-xl shadow hover:bg-gray-400">Select Region</button>
+                <button id="clear-region-btn" class="bg-red-300 text-red-800 px-4 py-2 rounded-xl shadow hover:bg-red-400">Clear</button>
+              </div>
+            </div>
+
+            <!-- OCR Text Size -->
+            <div class="flex flex-col gap-2 w-64">
+              <label for="ocr-text-size" class="text-sm font-medium text-gray-700 dark:text-gray-100">OCR Text Size</label>
+              <input type="range" id="ocr-text-size" name="ocr-text-size" min="10" max="48" value="16" class="w-full">
+            </div>
+
+            <!-- Keyboard Shortcut -->
+            <div class="flex flex-col gap-2">
+              <label for="shortcut-input" class="text-sm font-medium text-gray-700 dark:text-gray-100">Select Shortcut</label>
+              <input type="text" id="shortcut-input" name="shortcut-input" placeholder="e.g. Ctrl+Shift+K" value="ctrl+shift+k" class="px-3 py-2 rounded-xl border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <!-- Gamepad Button Selector -->
+            <div class="flex flex-col gap-2">
+              <label for="gamepad-button" class="text-sm font-medium text-gray-700 dark:text-gray-100">Select Gamepad Button</label>
+              <select id="gamepad-button" class="px-3 py-2 rounded-xl border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="X">X</option>
+                <option value="Y">Y</option>
+                <option value="L1">L1</option>
+                <option value="R1">R1</option>
+                <option value="Start">Start</option>
+                <option value="Select">Select</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- OCR History Panel -->
+        <div class="w-full lg:w-1/3 bg-white dark:bg-gray-800 rounded-2xl shadow-md p-4 h-[400px] overflow-y-auto">
+          <h2 class="text-lg font-semibold mb-4">History</h2>
+          <div id="ocr-history" class="flex flex-col gap-2">
+          </div>
+        </div>
+      </div>
+  
+      <form id="uploadForm" method="POST" enctype="multipart/form-data" action="/ocr" class="hidden">
+        <input type="hidden" name="image" id="imageInput">
+      </form>
+    </main>
+  </div>
   <script type="module" src="/static/js/main.js"></script>
 </body>
 </html>
