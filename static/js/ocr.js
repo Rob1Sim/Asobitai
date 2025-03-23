@@ -238,3 +238,22 @@ function initRegionSelection() {
     overlay.style.display = "none";
   });
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  const copyBtn = document.getElementById("copy-btn");
+  const ocrResult = document.getElementById("ocr-result");
+
+  if (copyBtn && ocrResult) {
+    copyBtn.addEventListener("click", () => {
+      const text = ocrResult.innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        copyBtn.textContent = "Copied!";
+        setTimeout(() => {
+          copyBtn.textContent = "Copy";
+        }, 1000);
+      }).catch(err => {
+        console.error("Copy failed:", err);
+      });
+    });
+  }
+});
