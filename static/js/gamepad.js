@@ -1,9 +1,11 @@
 import { captureFrame } from './ocr.js';
+import { saveSettingsToCookie } from './cookie.js';
 
 export function initGamepad() {
   window.addEventListener("gamepadconnected", (e) => {
     console.log("🎮 Gamepad connected:", e.gamepad.id);
     pollGamepad(e.gamepad.index);
+    saveSettingsToCookie();
   });
 }
 

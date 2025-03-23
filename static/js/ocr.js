@@ -1,3 +1,6 @@
+import { copyToClipboard, addToHistory } from "./utils.js";
+import { saveSettingsToCookie } from "./cookie.js";
+
 export function initOCR() {
     const captureButton = document.getElementById("capture-btn");
     const selectWindowButton = document.getElementById("select-window-btn");
@@ -107,12 +110,18 @@ export async function captureFrame() {
  */
 function dispalyMinedText(text) {
   const wrapper = document.getElementById('ocr-result');
+  
+  if (wrapper && wrapper.innerText.trim()) {
+    addToHistory(wrapper.innerText.trim());
+  }
+
   wrapper.innerHTML = ''; 
   const div = document.createElement('main');
   div.setAttribute('lang', 'ja');
   div.innerHTML = text;
-    wrapper.appendChild(div);
+  wrapper.appendChild(div);
 }
+
 
 /**
  * Converts a data URL to a Blob object.
@@ -134,6 +143,7 @@ function initOCRTextSizeSlider() {
 
   slider.addEventListener("input", () => {
     result.style.fontSize = `${slider.value}px`;
+    saveSettingsToCookie();
   });
 
   // Set initial font size
@@ -246,14 +256,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (copyBtn && ocrResult) {
     copyBtn.addEventListener("click", () => {
       const text = ocrResult.innerText;
-      navigator.clipboard.writeText(text).then(() => {
-        copyBtn.textContent = "Copied!";
-        setTimeout(() => {
-          copyBtn.textContent = "Copy";
-        }, 1000);
-      }).catch(err => {
-        console.error("Copy failed:", err);
-      });
+      copyToClipboard(text, copyBtn);
     });
   }
 });

@@ -1,4 +1,5 @@
 import { captureFrame } from './ocr.js';
+import { saveSettingsToCookie } from './cookie.js';
 
 export function initKeyboardShortcut() {
   window.addEventListener('keydown', (e) => {
@@ -25,6 +26,7 @@ export function initKeyboardShortcut() {
       e.preventDefault();
       captureFrame();
     }
+    saveSettingsToCookie();
   });
 }
 
