@@ -19,10 +19,16 @@ def ocr_image():
     image = Image.open(BytesIO(img_bytes)).convert("RGB")
 
     result = ocr.ocr(np.array(image), cls=True)
-    lines = []
+    boxes_with_text = []
     for line in result:
         for box, (text, conf) in line:
-            lines.append(text)
+            x_avg = sum(p[0] for p in box) / 4
+            y_avg = sum(p[1] for p in box) / 4
+            boxes_with_text.append((y_avg, x_avg, text))
+
+    boxes_with_text.sort()
+    lines = [text for _, _, text in boxes_with_text]
     return "\n".join(lines)
+
 if __name__ == "__main__":
     app.run(debug=True)
