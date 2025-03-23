@@ -69,7 +69,23 @@ async function startCapture() {
  * @returns {Promise<void>} A promise that resolves when the frame capture and OCR processing is complete.
  */
 export async function captureFrame() {
+  const loadingIndicator = document.getElementById("ocr-loading");
+  if (loadingIndicator) loadingIndicator.classList.remove("hidden");
+
+  const captureButton = document.getElementById("capture-btn");
+  
   const video = document.getElementById("video");
+  if (!video || !video.srcObject) {
+    console.warn("No video stream available. Capture aborted.");
+    if (loadingIndicator) loadingIndicator.classList.add("hidden");
+    captureButton?.removeAttribute("disabled");
+    captureButton?.classList.remove("opacity-50", "cursor-not-allowed");
+    return;
+  }
+
+  captureButton?.setAttribute("disabled", "true");
+  captureButton?.classList.add("opacity-50", "cursor-not-allowed");
+
   const canvas = document.createElement("canvas");
   
   if (selectedRegion) {
@@ -99,6 +115,11 @@ export async function captureFrame() {
   });
 
   const text = await response.text();
+  if (loadingIndicator) loadingIndicator.classList.add("hidden");
+  
+  captureButton?.removeAttribute("disabled");
+  captureButton?.classList.remove("opacity-50", "cursor-not-allowed");
+
   dispalyMinedText(text);
 }
 
