@@ -193,12 +193,6 @@ You can fork this project, suggest features, or report issues in the GitHub Issu
 
 ---
 
-## 📄 License
-
-This project is licensed under the **MIT License** — see [LICENSE](./LICENSE) for details.
-
----
-
 ## 🐳 Docker Support
 
 Prefer Docker? You can build and run the app in an isolated container using the included `Dockerfile`.
@@ -209,3 +203,10 @@ docker run -p 5000:5000 asobitai
 ```
 
 > Note: PaddleOCR GPU builds may not work on Apple Silicon at this time.
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License** — see [LICENSE](./LICENSE) for details.
+
