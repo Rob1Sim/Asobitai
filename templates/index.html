@@ -1,28 +1,115 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
   <title>Asobitai</title>
-  <link rel="stylesheet" href="/static/style.css">
+  <script>
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.classList.add('dark');
+    }
+  </script>
+  <link rel="stylesheet" href="/static/output.css">
 </head>
 <body>
-  <header>
-    <h1>Asobitai</h1>
-  </header>
-  <main>
-    <div class="capture-container">
-      <video id="video" autoplay></video>
-      <div>
-          <button id="capture-btn">Analyse</button>
-          <button id="select-window-btn">Select the window</button>
+  <div id="app">
+    <header class="bg-white dark:bg-gray-800 shadow-md py-4 px-6 flex items-center justify-between">
+      <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100">Asobitai</h1>
+      <div class="space-x-2">
+        <button class="text-sm text-gray-600 dark:text-gray-100 hover:text-gray-900"><a>Docs</a></button>
+        <button class="text-sm text-gray-600 dark:text-gray-100 hover:text-gray-900"><a>GitHub</a></button>
+        <button class="text-sm text-gray-600 dark:text-gray-100 hover:text-gray-900"><a>About</a></button>
       </div>
-    </div>
-    
-    <form id="uploadForm" method="POST" enctype="multipart/form-data" action="/ocr">
-      <input type="hidden" name="image" id="imageInput">
-    </form>
-    <div id="ocr-result"></div>
-  </main>
+    </header>
+    <main class="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 p-6">
+      <div class="flex gap-6">
+        <!-- Video Input -->
+        <div class="w-1/2 bg-white dark:bg-gray-800 rounded-2xl shadow-md p-4">
+          <h2 class="text-lg font-semibold mb-2">Live Capture</h2>
+          <div class="rounded-xl overflow-hidden border">
+            <video id="video" autoplay class="w-full h-auto object-cover"></video>
+          </div>
+          <div class="mt-4 flex gap-2">
+            <!-- Scan button with tooltip -->
+            <div class="relative group">
+              <button id="capture-btn" class="bg-blue-500 text-white px-4 py-2 rounded-xl shadow hover:bg-blue-600">Scan</button>
+              <div class="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 px-2 py-1 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition">
+                Shortcut: Ctrl + Shift + K
+              </div>
+            </div>
+            <!-- Reset button with tooltip -->
+            <div class="relative group">
+              <button id="reset-btn" class="bg-red-500 text-white px-4 py-2 rounded-xl shadow hover:bg-red-600">Reset</button>
+              <div class="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 px-2 py-1 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition">
+                Clears the OCR result
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <!-- OCR Result -->
+        <div class="w-1/2 flex flex-col">
+          <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-inner p-4 flex-1">
+            <h2 class="text-xl font-semibold mb-2">OCR Result</h2>
+            <div id="ocr-result" class="whitespace-pre-wrap font-mono text-gray-800 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 h-98 p-4 rounded-xl"></div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Options Panel -->
+      <div class="mt-6 bg-white dark:bg-gray-800 rounded-2xl shadow-md p-4 w-full max-w-screen-lg mx-auto">
+        <h2 class="text-lg font-semibold mb-4">Options</h2>
+          <div class="flex flex-col gap-4">
+          <!-- Select Window with tooltip -->
+          <div class="relative group w-fit">
+            <button id="select-window-btn" class="bg-gray-300 text-gray-700 px-4 py-2 rounded-xl shadow hover:bg-gray-400">Select Window</button>
+            <div class="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 px-2 py-1 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition">
+              Choose a window to scan
+            </div>
+          </div>
+
+          <!-- Select Region -->
+          <div class="flex flex-col gap-2">
+            <label class="text-sm font-medium text-gray-700 dark:text-gray-100">Select Region</label>
+            <div class="flex gap-2">
+              <button id="select-region-btn" class="bg-gray-300 text-gray-700 px-4 py-2 rounded-xl shadow hover:bg-gray-400">Select Region</button>
+              <button id="clear-region-btn" class="bg-red-300 text-red-800 px-4 py-2 rounded-xl shadow hover:bg-red-400">Clear</button>
+            </div>
+          </div>
+
+          <!-- OCR Text Size -->
+          <div class="flex flex-col gap-2 w-64">
+            <label for="ocr-text-size" class="text-sm font-medium text-gray-700 dark:text-gray-100">OCR Text Size</label>
+            <input type="range" id="ocr-text-size" name="ocr-text-size" min="10" max="48" value="16" class="w-full">
+          </div>
+
+          <!-- Keyboard Shortcut -->
+          <div class="flex flex-col gap-2">
+            <label for="shortcut-input" class="text-sm font-medium text-gray-700 dark:text-gray-100">Select Shortcut</label>
+            <input type="text" id="shortcut-input" name="shortcut-input" placeholder="e.g. Ctrl+Shift+K" class="px-3 py-2 rounded-xl border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+
+          <!-- Gamepad Button Selector -->
+          <div class="flex flex-col gap-2">
+            <label for="gamepad-button" class="text-sm font-medium text-gray-700 dark:text-gray-100">Select Gamepad Button</label>
+            <select id="gamepad-button" class="px-3 py-2 rounded-xl border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="A">A</option>
+              <option value="B">B</option>
+              <option value="X">X</option>
+              <option value="Y">Y</option>
+              <option value="L1">L1</option>
+              <option value="R1">R1</option>
+              <option value="Start">Start</option>
+              <option value="Select">Select</option>
+            </select>
+          </div>
+        </div>
+      </div>
+  
+      <form id="uploadForm" method="POST" enctype="multipart/form-data" action="/ocr" class="hidden">
+        <input type="hidden" name="image" id="imageInput">
+      </form>
+    </main>
+  </div>
   <script type="module" src="/static/js/main.js"></script>
 </body>
 </html>
