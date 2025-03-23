@@ -280,4 +280,16 @@ document.addEventListener("DOMContentLoaded", () => {
       copyToClipboard(text, copyBtn);
     });
   }
+
+  const sanitizeBtn = document.getElementById("sanitize-btn");
+  if (sanitizeBtn && ocrResult) {
+    sanitizeBtn.addEventListener("click", () => {
+      const cleaned = ocrResult.innerText.replace(/[\s\-]+/g, '');
+      const div = document.createElement('main');
+      div.setAttribute('lang', 'ja');
+      div.innerText = cleaned;
+      ocrResult.innerHTML = '';
+      ocrResult.appendChild(div);
+    });
+  }
 });

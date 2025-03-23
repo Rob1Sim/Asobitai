@@ -28,6 +28,7 @@ export function initKeyboardShortcut() {
     }
     saveSettingsToCookie();
   });
+  updateTooltipShortcut();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -47,5 +48,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     input.value = parts.join('+');
+    updateTooltipShortcut();
   });
+
 });
+
+function updateTooltipShortcut() {
+  const shortcutInput = document.getElementById("shortcut-input");
+  const scanTooltip = document.getElementById("scan-tooltip");
+  if (scanTooltip && shortcutInput?.value) {
+    console.log("pd")
+    scanTooltip.textContent = `Shortcut: ${shortcutInput.value}`;
+  }
+}

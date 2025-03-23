@@ -6,7 +6,8 @@ import { loadSettingsFromCookie } from './cookie.js';
 window.addEventListener('DOMContentLoaded', () => {
   initOCR();
   initGamepad();
-  initKeyboardShortcut();
   loadSettingsFromCookie();
+  initKeyboardShortcut();
+
 
 });

@@ -1,3 +1,5 @@
+import { saveSettingsToCookie } from "./cookie.js";
+
 /**
  * Copies the provided text to the clipboard and optionally updates the button text to indicate success.
  *
@@ -50,7 +52,10 @@ export function addToHistory(text) {
  trashIcon.textContent = "delete";
  deleteBtn.appendChild(trashIcon);
  deleteBtn.className = "text-xs text-white bg-red-500 hover:bg-red-600 rounded px-2 py-1 ";
- deleteBtn.addEventListener('click', () => historyItem.remove());
+ deleteBtn.addEventListener('click', () =>{
+    historyItem.remove();
+    saveSettingsToCookie();
+ });
 
  btnGroup.appendChild(copyBtn);
  btnGroup.appendChild(deleteBtn);
