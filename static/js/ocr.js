@@ -1,12 +1,10 @@
-
-
-
 export function initOCR() {
     const captureButton = document.getElementById("capture-btn");
     const selectWindowButton = document.getElementById("select-window-btn");
     
     captureButton.addEventListener("click", captureFrame);
     selectWindowButton.addEventListener("click", startCapture);
+    initOCRTextSizeSlider();
 }
 
 /**
@@ -81,4 +79,17 @@ function dataURLtoBlob(dataurl) {
     bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
   while(n--) u8arr[n] = bstr.charCodeAt(n);
   return new Blob([u8arr], {type:mime});
+}
+
+function initOCRTextSizeSlider() {
+  const slider = document.getElementById("ocr-text-size");
+  const result = document.getElementById("ocr-result");
+  if (!slider || !result) return;
+
+  slider.addEventListener("input", () => {
+    result.style.fontSize = `${slider.value}px`;
+  });
+
+  // Set initial font size
+  result.style.fontSize = `${slider.value}px`;
 }
