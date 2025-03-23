@@ -39,6 +39,40 @@ pip install -r requirements.txt
 
 ---
 
+## 🔧 Quick Setup Scripts
+
+To simplify setup, the project includes helper launch scripts:
+
+### 🪟 Windows
+
+```bash
+launch.bat
+```
+
+- Installs dependencies
+- Launches the app
+- (Does **not** install CUDA or cuDNN)
+
+### 🐧 Linux / macOS
+
+```bash
+launch.sh
+```
+
+- Installs dependencies
+- Launches the app
+
+
+---
+
+You can still launch manually with:
+
+```bash
+python app.py
+```
+
+---
+
 ## ⚙️ Installing CUDA & cuDNN (Windows)
 
 ### 1. CUDA Toolkit (Recommended: 11.2)
@@ -89,17 +123,56 @@ ocr = PaddleOCR(use_angle_cls=True, lang='japan', use_gpu=False)
 
 ---
 
+## 🎨 Frontend Styling (TailwindCSS)
+
+This project uses [Tailwind CSS](https://tailwindcss.com/) for styling.
+
+### Modifying the CSS
+
+All styles are written using Tailwind utility classes directly in HTML.  
+If you want to customize or extend styles:
+
+1. Edit the `style.css` file in `static/` (it includes the Tailwind base config).
+2. Run the Tailwind CLI to rebuild the CSS:
+
+```bash
+npx tailwindcss -i ./static/style.css -o ./static/output.css --watch
+```
+
+> Make sure `output.css` is included in your HTML instead of the raw `style.css`.
+
+You can install Tailwind locally via:
+
+```bash
+npm install -D tailwindcss
+npx tailwindcss init
+```
+
+Or use a CDN for quick testing (not recommended for production).
+
+---
+
 ## 📁 Project Structure
 
 ```
 asobitai/
 ├── app.py
 ├── requirements.txt
+├── launch.bat
+├── launch.sh
+├── Dockerfile
 ├── templates/
 │   └── index.html
 ├── static/
 │   ├── style.css
-│   └── script.js
+│   ├── output.css
+│   └── js/
+│       ├── main.js
+│       ├── ocr.js
+│       ├── utils.js
+│       ├── cookie.js
+│       ├── gamepad.js
+│       └── keyboard.js
 ```
 
 ---
@@ -110,7 +183,6 @@ asobitai/
 - 🖍️ Show bounding boxes on OCR’d text
 - 💾 Auto-save recognized lines or dialogues
 - 🧠 Detect and segment dialogue boxes
-- 🧩 Connect with Migaku or Yomichan for word lookup
 
 ---
 
@@ -124,3 +196,16 @@ You can fork this project, suggest features, or report issues in the GitHub Issu
 ## 📄 License
 
 This project is licensed under the **MIT License** — see [LICENSE](./LICENSE) for details.
+
+---
+
+## 🐳 Docker Support
+
+Prefer Docker? You can build and run the app in an isolated container using the included `Dockerfile`.
+
+```bash
+docker build -t asobitai .
+docker run -p 5000:5000 asobitai
+```
+
+> Note: PaddleOCR GPU builds may not work on Apple Silicon at this time.
