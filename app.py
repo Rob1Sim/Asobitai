@@ -1,11 +1,15 @@
 from flask import Flask, render_template, request
 from paddleocr import PaddleOCR
+import paddle
 from PIL import Image
 from io import BytesIO
 import numpy as np
 
 app = Flask(__name__)
-ocr = PaddleOCR(use_angle_cls=True, lang='japan', use_gpu=True)
+
+# Automatically enable GPU if available, otherwise fall back to CPU
+use_gpu = paddle.device.is_compiled_with_cuda()
+ocr = PaddleOCR(use_angle_cls=True, lang='japan', use_gpu=use_gpu)
 
 @app.route('/')
 def index():
