@@ -81,10 +81,12 @@ http://localhost:5000
 
 ## 🧪 CPU Mode (Fallback)
 
-If you don’t have a GPU, you can disable GPU mode in `app.py`:
+The application now automatically checks if CUDA is available. If not, it
+falls back to CPU mode so no changes are needed:
 
 ```python
-ocr = PaddleOCR(use_angle_cls=True, lang='japan', use_gpu=False)
+use_gpu = paddle.device.is_compiled_with_cuda()
+ocr = PaddleOCR(use_angle_cls=True, lang='japan', use_gpu=use_gpu)
 ```
 
 ---
